@@ -1,10 +1,9 @@
 package com.will.weather.configuration;
 
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -17,18 +16,20 @@ import org.thymeleaf.templateresolver.ITemplateResolver;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = {"com.will.weather"})
-@Setter
+@RequiredArgsConstructor
 public class WebMVCConfig implements WebMvcConfigurer {
 
-    private ApplicationContext applicationContext;
+    private final ApplicationContext applicationContext;
 
     @Bean
-    public ViewResolver htmlViewResolver() {
-        ThymeleafViewResolver resolver = new ThymeleafViewResolver();
-        resolver.setTemplateEngine(templateEngine(htmlTemplateResolver()));
-        resolver.setContentType("text/html");
+    public ITemplateResolver templateResolver() {
+        SpringResourceTemplateResolver resolver = new SpringResourceTemplateResolver();
+        resolver.setApplicationContext(applicationContext);
+        resolver.setPrefix("/WEB-INF/templates/");
+        resolver.setSuffix(".html");
         resolver.setCharacterEncoding("UTF-8");
+        resolver.setTemplateMode(TemplateMode.HTML);
+        resolver.setCacheable(false);
         return resolver;
     }
 
@@ -36,18 +37,16 @@ public class WebMVCConfig implements WebMvcConfigurer {
     public SpringTemplateEngine templateEngine(ITemplateResolver templateResolver) {
         SpringTemplateEngine engine = new SpringTemplateEngine();
         engine.setTemplateResolver(templateResolver);
-        engine.setEnableSpringELCompiler(true); // optional but powerful
+        engine.setEnableSpringELCompiler(true);
         return engine;
     }
 
     @Bean
-    public ITemplateResolver htmlTemplateResolver() {
-        SpringResourceTemplateResolver resolver = new SpringResourceTemplateResolver();
-        resolver.setApplicationContext(applicationContext);
-        resolver.setPrefix("/WEB-INF/templates/");
-        resolver.setSuffix(".html");
-        resolver.setCacheable(false);
-        resolver.setTemplateMode(TemplateMode.HTML);
+    public ViewResolver viewResolver(SpringTemplateEngine templateEngine) {
+        ThymeleafViewResolver resolver = new ThymeleafViewResolver();
+        resolver.setTemplateEngine(templateEngine);
+        resolver.setCharacterEncoding("UTF-8");
+        resolver.setContentType("text/html; charset=UTF-8");
         return resolver;
     }
 }
