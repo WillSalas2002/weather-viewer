@@ -22,14 +22,14 @@ public class LoginController {
     @GetMapping("/login")
     public String login(Model model) {
         model.addAttribute("loginDto", new LoginDto());
-        return "login-with-errors";
+        return "login";
     }
 
     @PostMapping("/login")
     public String login(Model model, @Valid LoginDto loginDto, BindingResult bindingResult) {
         credentialValidator.validate(loginDto, bindingResult);
         if (bindingResult.hasErrors()) {
-            return "login-with-errors";
+            return "login";
         }
         model.addAttribute("username", loginDto.getUsername());
         return "index";

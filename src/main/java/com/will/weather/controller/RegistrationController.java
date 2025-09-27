@@ -2,10 +2,10 @@ package com.will.weather.controller;
 
 import com.will.weather.dto.RegistrationDto;
 
-import com.will.weather.validation.CredentialValidator;
 import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,6 +29,6 @@ public class RegistrationController {
             return "registration";
         }
         model.addAttribute("registrationDto", registrationDto);
-        return "index.html";
+        return "index";
     }
 }

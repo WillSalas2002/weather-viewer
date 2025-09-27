@@ -25,7 +25,7 @@ public class CredentialValidator implements Validator {
         LoginDto loginDto = (LoginDto) target;
         boolean isCorrect = loginService.checkCredentials(loginDto);
         if (!isCorrect) {
-            errors.rejectValue("credentials", "wrong.creds", "Username or password incorrect");
+            errors.reject("wrong.creds", "Username or password incorrect");
         }
     }
 }

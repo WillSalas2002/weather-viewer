@@ -20,10 +20,13 @@ public class HibernateConfig {
 
     @Value("${spring.datasource.url}")
     private String url;
+
     @Value("${spring.datasource.username}")
     private String username;
+
     @Value("${spring.datasource.password}")
     private String password;
+
     @Value("${spring.datasource.driverClassName}")
     private String driverClass;
 
@@ -33,7 +36,7 @@ public class HibernateConfig {
         sessionFactory.setDataSource(dataSource());
         sessionFactory.setPackagesToScan("com.will.weather.model");
         sessionFactory.setHibernateProperties(hibernateProperties());
-        
+
         return sessionFactory;
     }
 
@@ -62,7 +65,8 @@ public class HibernateConfig {
     private Properties hibernateProperties() {
         Properties hibernateProperties = new Properties();
         hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "create");
-        hibernateProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
+        hibernateProperties.setProperty(
+                "hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
         hibernateProperties.setProperty("hibernate.connection.pool_size", "5");
         hibernateProperties.setProperty("show_sql", "true");
         return hibernateProperties;
