@@ -1,6 +1,7 @@
 package com.will.weather.controller;
 
 import com.will.weather.dto.LoginDto;
+import com.will.weather.service.LoginService;
 import com.will.weather.validation.CredentialValidator;
 
 import jakarta.servlet.http.Cookie;
@@ -23,10 +24,12 @@ import java.util.Optional;
 public class LoginController {
 
     private final CredentialValidator credentialValidator;
+    private final LoginService loginService;
 
     @GetMapping("/login")
     public String login(Model model, HttpServletRequest request) {
-        if (readCookie(request).isPresent()) {
+        Optional<String> sessionIdOptional = readCookie(request);
+        if (isSessionValid(sessionIdOptional)) {
             return "redirect:/";
         }
         model.addAttribute("loginDto", new LoginDto());
@@ -34,16 +37,18 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String login(
-            Model model,
-            @Valid LoginDto loginDto,
-            BindingResult bindingResult) {
+    public String login(Model model, @Valid LoginDto loginDto, BindingResult bindingResult) {
         credentialValidator.validate(loginDto, bindingResult);
         if (bindingResult.hasErrors()) {
             return "login";
         }
         model.addAttribute("username", loginDto.getUsername());
         return "index";
+    }
+
+    private boolean isSessionValid(Optional<String> sessionIdOptional) {
+        return sessionIdOptional.isPresent()
+                && !loginService.isSessionExpired(sessionIdOptional.get());
     }
 
     private Optional<String> readCookie(HttpServletRequest request) {

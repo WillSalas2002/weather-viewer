@@ -1,7 +1,7 @@
 package com.will.weather.validation;
 
 import com.will.weather.dto.LoginDto;
-import com.will.weather.service.impl.LoginServiceImpl;
+import com.will.weather.service.LoginService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -13,7 +13,7 @@ import org.springframework.validation.Validator;
 @RequiredArgsConstructor
 public class CredentialValidator implements Validator {
 
-    private final LoginServiceImpl loginService;
+    private final LoginService loginService;
 
     @Override
     public boolean supports(Class<?> clazz) {
