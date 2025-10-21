@@ -32,6 +32,10 @@ public class User {
     @Column(name = "password")
     private String password;
 
+    public User(Long id) {
+        this.id = id;
+    }
+
     public User(String login, String password) {
         this.login = login;
         this.password = password;

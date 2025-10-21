@@ -1,7 +1,10 @@
 package com.will.weather.controller;
 
 import com.will.weather.dto.RegistrationDto;
+import com.will.weather.service.RegistrationService;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
@@ -12,9 +15,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.util.UUID;
+
 @Controller
 @RequiredArgsConstructor
 public class RegistrationController {
+
+    private final RegistrationService registrationService;
 
     @GetMapping("/registration")
     public String registration(Model model) {
@@ -24,10 +31,21 @@ public class RegistrationController {
 
     @PostMapping("/registration")
     public String register(
-            Model model, @Valid RegistrationDto registrationDto, BindingResult bindingResult) {
+            HttpServletResponse response,
+            Model model,
+            @Valid RegistrationDto registrationDto,
+            BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "registration";
         }
+        UUID sessionId =
+                registrationService.registerUser(
+                        registrationDto.getUsername(), registrationDto.getPassword());
+
+        Cookie cookie = new Cookie("sessionId", sessionId.toString());
+        cookie.setMaxAge(3600);
+        response.addCookie(cookie);
+
         model.addAttribute("registrationDto", registrationDto);
         return "index";
     }

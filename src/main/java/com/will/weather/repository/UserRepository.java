@@ -7,4 +7,6 @@ import java.util.Optional;
 public interface UserRepository {
 
     Optional<User> findByUsernameAndPassword(String username, String password);
+
+    Long save(User user);
 }
