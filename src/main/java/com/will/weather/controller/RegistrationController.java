@@ -35,18 +35,21 @@ public class RegistrationController {
             Model model,
             @Valid RegistrationDto registrationDto,
             BindingResult bindingResult) {
+
         if (bindingResult.hasErrors()) {
             return "registration";
         }
         UUID sessionId =
                 registrationService.registerUser(
                         registrationDto.getUsername(), registrationDto.getPassword());
+        attachCookieToUser(response, sessionId);
+        model.addAttribute("registrationDto", registrationDto);
+        return "redirect:/";
+    }
 
+    private static void attachCookieToUser(HttpServletResponse response, UUID sessionId) {
         Cookie cookie = new Cookie("sessionId", sessionId.toString());
         cookie.setMaxAge(3600);
         response.addCookie(cookie);
-
-        model.addAttribute("registrationDto", registrationDto);
-        return "index";
     }
 }

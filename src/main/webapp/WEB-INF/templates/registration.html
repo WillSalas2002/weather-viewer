@@ -18,6 +18,13 @@
     <h2 class="text-center mb-5">Sign Up</h2>
 
     <div th:object="${registrationDto}">
+        <div class="row justify-content-center has-validation" th:if="${errorMessage}">
+            <div class="col-12 col-lg-4 col-md-6 col-sm-12">
+                <div class="alert alert-danger" role="alert" th:text="${errorMessage}">
+                    Passwords don't match.
+                </div>
+            </div>
+        </div>
         <div class="row justify-content-center has-validation" th:if="${#fields.hasGlobalErrors()}">
             <div class="col-12 col-lg-4 col-md-6 col-sm-12">
                 <div class="alert alert-danger" role="alert">

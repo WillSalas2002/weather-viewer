@@ -2,13 +2,14 @@ package com.will.weather.controller;
 
 import com.will.weather.dto.LoginDto;
 import com.will.weather.service.LoginService;
-import com.will.weather.validation.CredentialValidator;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,12 +19,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.UUID;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 public class LoginController {
 
-    private final CredentialValidator credentialValidator;
     private final LoginService loginService;
 
     @GetMapping("/login")
@@ -37,11 +39,17 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String login(Model model, @Valid LoginDto loginDto, BindingResult bindingResult) {
-        credentialValidator.validate(loginDto, bindingResult);
+    public String login(
+            Model model,
+            @Valid LoginDto loginDto,
+            BindingResult bindingResult,
+            HttpServletResponse response) {
+
         if (bindingResult.hasErrors()) {
             return "login";
         }
+        UUID sessionId = loginService.login(loginDto);
+        attachCookieToUser(response, sessionId);
         model.addAttribute("username", loginDto.getUsername());
         return "index";
     }
@@ -59,5 +67,11 @@ public class LoginController {
                     .findAny();
         }
         return Optional.empty();
+    }
+
+    private static void attachCookieToUser(HttpServletResponse response, UUID sessionId) {
+        Cookie cookie = new Cookie("sessionId", sessionId.toString());
+        cookie.setMaxAge(3600);
+        response.addCookie(cookie);
     }
 }

@@ -1,11 +1,13 @@
 package com.will.weather.repository.impl;
 
+import com.will.weather.exception.UserAlreadyExistsException;
 import com.will.weather.model.User;
 import com.will.weather.repository.UserRepository;
 import com.will.weather.repository.mapper.UserRowMapper;
 
 import lombok.AllArgsConstructor;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -36,15 +38,20 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public Long save(User user) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(
-                connection -> {
-                    PreparedStatement ps =
-                            connection.prepareStatement(SQL_INSERT, new String[] {"id"});
-                    ps.setString(1, user.getLogin());
-                    ps.setString(2, user.getPassword());
-                    return ps;
-                },
-                keyHolder);
-        return keyHolder.getKeyAs(Long.class);
+        try {
+            jdbcTemplate.update(
+                    connection -> {
+                        PreparedStatement ps =
+                                connection.prepareStatement(SQL_INSERT, new String[] {"id"});
+                        ps.setString(1, user.getLogin());
+                        ps.setString(2, user.getPassword());
+                        return ps;
+                    },
+                    keyHolder);
+            return keyHolder.getKeyAs(Long.class);
+        } catch (DuplicateKeyException e) {
+            throw new UserAlreadyExistsException(
+                    String.format("Username [%s] is already taken", user.getLogin()));
+        }
     }
 }
