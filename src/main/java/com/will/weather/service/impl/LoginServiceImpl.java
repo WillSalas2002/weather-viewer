@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -21,14 +20,6 @@ import java.util.UUID;
 public class LoginServiceImpl implements LoginService {
     private final UserRepository userRepository;
     private final SessionRepository sessionRepository;
-
-    @Override
-    public boolean checkCredentials(LoginDto loginDto) {
-        Optional<User> userOptional =
-                userRepository.findByUsernameAndPassword(
-                        loginDto.getUsername(), loginDto.getPassword());
-        return userOptional.isPresent();
-    }
 
     @Override
     public boolean isSessionExpired(String sessionId) {
