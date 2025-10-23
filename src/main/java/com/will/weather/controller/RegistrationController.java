@@ -14,10 +14,12 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.UUID;
 
 @Controller
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 public class RegistrationController {
 
@@ -44,7 +46,7 @@ public class RegistrationController {
                         registrationDto.getUsername(), registrationDto.getPassword());
         attachCookieToUser(response, sessionId);
         model.addAttribute("registrationDto", registrationDto);
-        return "redirect:/";
+        return "redirect:/weather";
     }
 
     private static void attachCookieToUser(HttpServletResponse response, UUID sessionId) {

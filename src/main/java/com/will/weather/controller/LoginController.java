@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -23,6 +24,7 @@ import java.util.UUID;
 
 @Slf4j
 @Controller
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 public class LoginController {
 
@@ -32,7 +34,7 @@ public class LoginController {
     public String login(Model model, HttpServletRequest request) {
         Optional<String> sessionIdOptional = readCookie(request);
         if (isSessionValid(sessionIdOptional)) {
-            return "redirect:/";
+            return "redirect:/weather";
         }
         model.addAttribute("loginDto", new LoginDto());
         return "login";
