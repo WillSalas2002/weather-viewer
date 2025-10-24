@@ -1,5 +1,6 @@
 package com.will.weather.repository.impl;
 
+import com.will.weather.dto.UserLocationView;
 import com.will.weather.exception.UserAlreadyExistsException;
 import com.will.weather.model.User;
 import com.will.weather.repository.UserRepository;
@@ -14,8 +15,10 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 @AllArgsConstructor
@@ -27,6 +30,12 @@ public class UserRepositoryImpl implements UserRepository {
     private static final String SQL_BY_USERNAME_AND_PASSWORD =
             "SELECT u.id, u.login, u.password FROM users u WHERE u.login = ? AND u.password = ?";
     private static final String SQL_INSERT = "INSERT INTO users (login, password) VALUES (?, ?)";
+    private static final String SQL_FIND_USER_WITH_LOCATIONS_BY_SESSION = """
+SELECT l."name", l.latitude, l.longitude, u.login
+FROM users u
+JOIN sessions s ON u.id = s.user_id
+JOIN locations l ON u.id = l.user_id
+WHERE s.id = ?""";
 
     @Override
     public Optional<User> findByUsernameAndPassword(String username, String password) {
@@ -53,5 +62,25 @@ public class UserRepositoryImpl implements UserRepository {
             throw new UserAlreadyExistsException(
                     String.format("Username [%s] is already taken", user.getLogin()));
         }
+    }
+
+    @Override
+    public UserLocationView findUserWithLocationsBySession(UUID sessionId) {
+        ArrayList<UserLocationView.LocationView> locations = new ArrayList<>();
+        final String[] login = new String[1];
+
+        jdbcTemplate.query(
+                SQL_FIND_USER_WITH_LOCATIONS_BY_SESSION,
+                rs -> {
+                    login[0] = rs.getString("login");
+                    locations.add(
+                            UserLocationView.LocationView.builder()
+                                    .withLocationName(rs.getString("name"))
+                                    .withLongitude(rs.getBigDecimal("longitude"))
+                                    .withLatitude(rs.getBigDecimal("latitude"))
+                                    .build());
+                }, sessionId);
+
+        return UserLocationView.builder().withLogin(login[0]).withLocations(locations).build();
     }
 }

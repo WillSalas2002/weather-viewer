@@ -53,7 +53,7 @@ public class LoginController {
         UUID sessionId = loginService.login(loginDto);
         attachCookieToUser(response, sessionId);
         model.addAttribute("username", loginDto.getUsername());
-        return "index";
+        return "redirect:/weather";
     }
 
     private boolean isSessionValid(Optional<String> sessionIdOptional) {
