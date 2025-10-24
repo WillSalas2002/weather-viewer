@@ -73,6 +73,7 @@ public class LoginController {
 
     private static void attachCookieToUser(HttpServletResponse response, UUID sessionId) {
         Cookie cookie = new Cookie("sessionId", sessionId.toString());
+        cookie.setPath("/");
         cookie.setMaxAge(3600);
         response.addCookie(cookie);
     }
