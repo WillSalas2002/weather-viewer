@@ -92,7 +92,7 @@ WHERE u.id = ?""";
     }
 
     @Override
-    public Optional<Long> findUserBySessionId(UUID sessionId) {
+    public Optional<Long> findUserIdBySessionId(UUID sessionId) {
         List<Long> ids =
                 jdbcTemplate.query(
                         SQL_FIND_USER_ID_BY_SESSION_ID,

@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
     public List<ForecastView> findUserWithLocationsBySession(String sessionId) {
         Long userId =
                 userRepository
-                        .findUserBySessionId(UUID.fromString(sessionId))
+                        .findUserIdBySessionId(UUID.fromString(sessionId))
                         .orElseThrow(
                                 () ->
                                         new NoSuchElementException(

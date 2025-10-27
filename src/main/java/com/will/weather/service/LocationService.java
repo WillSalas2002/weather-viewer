@@ -9,5 +9,5 @@ public interface LocationService {
 
     List<LocationResponse> getAll(String name);
 
-    void save(LocationDto location);
+    void save(LocationDto location, String sessionId);
 }

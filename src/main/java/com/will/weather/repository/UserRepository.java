@@ -14,5 +14,5 @@ public interface UserRepository {
 
     UserLocationData findUserWithLocationsByUserId(Long userId);
 
-    Optional<Long> findUserBySessionId(UUID uuid);
+    Optional<Long> findUserIdBySessionId(UUID uuid);
 }

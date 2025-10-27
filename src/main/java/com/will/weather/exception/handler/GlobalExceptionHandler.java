@@ -3,6 +3,7 @@ package com.will.weather.exception.handler;
 import com.will.weather.dto.LoginDto;
 import com.will.weather.dto.RegistrationDto;
 import com.will.weather.exception.InvalidCredentialsException;
+import com.will.weather.exception.LocationAlreadyExistsException;
 import com.will.weather.exception.UserAlreadyExistsException;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,12 +33,19 @@ public class GlobalExceptionHandler {
         return mav;
     }
 
+    @ExceptionHandler(value = LocationAlreadyExistsException.class)
+    public ModelAndView handleUserAlreadyExists(LocationAlreadyExistsException e) {
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("redirect:/weather");
+        return mav;
+    }
+
     @ExceptionHandler(value = Exception.class)
     public ModelAndView handleGlobalException(
-            HttpServletRequest request, InvalidCredentialsException e) {
+            HttpServletRequest request, Exception e) {
         ModelAndView mav = new ModelAndView();
         mav.addObject("url", request.getRequestURL());
-        mav.setViewName("error");
+        mav.setViewName("redirect:/error");
         return mav;
     }
 }
