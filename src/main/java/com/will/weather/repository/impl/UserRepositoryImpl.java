@@ -40,7 +40,6 @@ WHERE s."id" = ?;
 """
 SELECT l."name", l.latitude, l.longitude, u.login
 FROM users u
-JOIN sessions s ON u.id = s.user_id
 JOIN locations l ON u.id = l.user_id
 WHERE u.id = ?""";
 

@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -25,15 +24,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<ForecastView> findUserWithLocationsBySession(String sessionId) {
-        Optional<Long> userIdOptional =
-                userRepository.findUserBySessionId(UUID.fromString(sessionId));
-        if (userIdOptional.isEmpty()) {
-            throw new NoSuchElementException(
-                    String.format("Session with id [%s] has no associated user", sessionId));
-        }
-
-        UserLocationData userLocationData =
-                userRepository.findUserWithLocationsByUserId(userIdOptional.get());
+        Long userId =
+                userRepository
+                        .findUserBySessionId(UUID.fromString(sessionId))
+                        .orElseThrow(
+                                () ->
+                                        new NoSuchElementException(
+                                                String.format(
+                                                        "Session with id [%s] has no associated user",
+                                                        sessionId)));
+        UserLocationData userLocationData = userRepository.findUserWithLocationsByUserId(userId);
 
         return userLocationData.locations().stream()
                 .map(
