@@ -37,7 +37,7 @@ public class LoginServiceImpl implements LoginService {
                                 () ->
                                         new InvalidCredentialsException(
                                                 "Invalid username or password."));
-        sessionRepository.save(new Session(sessionId, user, LocalDateTime.now().plusHours(1)));
+        sessionRepository.save(new Session(sessionId, user.getId(), LocalDateTime.now().plusHours(1)));
         return sessionId;
     }
 }

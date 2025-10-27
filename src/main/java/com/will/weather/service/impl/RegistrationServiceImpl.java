@@ -25,7 +25,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         Long savedUserId = userRepository.save(new User(username, password));
         UUID sessionId = UUID.randomUUID();
         sessionRepository.save(
-                new Session(sessionId, new User(savedUserId), LocalDateTime.now().plusHours(1)));
+                new Session(sessionId, savedUserId, LocalDateTime.now().plusHours(1)));
         return sessionId;
     }
 }

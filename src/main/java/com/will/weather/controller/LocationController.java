@@ -31,4 +31,9 @@ public class LocationController {
         model.addAttribute("location", new LocationDto());
         return "search-results";
     }
+
+    @PostMapping("/add")
+    public String add(LocationDto location) {
+        return "redirect:/weather";
+    }
 }

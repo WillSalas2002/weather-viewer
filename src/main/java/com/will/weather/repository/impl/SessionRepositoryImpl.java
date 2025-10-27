@@ -25,7 +25,7 @@ public class SessionRepositoryImpl implements SessionRepository {
     @Override
     public void save(Session session) {
         jdbcTemplate.update(
-                SQL_INSERT, session.getUuid(), session.getUser().getId(), session.getExpiresAt());
+                SQL_INSERT, session.getUuid(), session.getUserId(), session.getExpiresAt());
     }
 
     @Override
