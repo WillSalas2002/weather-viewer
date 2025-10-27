@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record LocationDto(
+public record LocationResponse(
         String name,
         @JsonProperty("lon") BigDecimal longitude,
         @JsonProperty("lat") BigDecimal latitude,

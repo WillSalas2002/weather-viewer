@@ -1,7 +1,7 @@
 package com.will.weather.client;
 
 import com.will.weather.client.dto.ForecastDto;
-import com.will.weather.client.dto.LocationDto;
+import com.will.weather.client.dto.LocationResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -36,10 +36,10 @@ public class WeatherClient {
 
     private final RestTemplate restTemplate;
 
-    public List<LocationDto> getLocations(String name) {
+    public List<LocationResponse> getLocations(String name) {
         String urlStr = String.format(templatedCoordinateUrl, name, limit, apiKey);
 
-        ResponseEntity<List<LocationDto>> response =
+        ResponseEntity<List<LocationResponse>> response =
                 restTemplate.exchange(
                         URI.create(urlStr),
                         HttpMethod.GET,

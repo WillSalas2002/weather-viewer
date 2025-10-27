@@ -1,11 +1,13 @@
 package com.will.weather.service;
 
-import com.will.weather.client.dto.LocationDto;
+import com.will.weather.client.dto.LocationResponse;
+import com.will.weather.dto.LocationDto;
 
 import java.util.List;
 
 public interface LocationService {
 
-    List<LocationDto> getAll(String name);
+    List<LocationResponse> getAll(String name);
 
+    void save(LocationDto location);
 }

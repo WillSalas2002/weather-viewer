@@ -16,7 +16,7 @@
         </a>
         <div class="d-flex align-items-center">
             <span class="navbar-text me-3">zhukovsd</span>
-            <button class="btn btn-outline-danger"><a style="text-decoration: none" th:href="@{/auth/logout}">Sign
+            <button class="btn btn-outline-danger"><a style="text-decoration: none; color: inherit" th:href="@{/auth/logout}">Sign
                 out</a></button>
         </div>
     </div>
@@ -24,7 +24,7 @@
 
 <section id="page-content">
     <div class="container mt-4">
-        <form th:method="GET" th:action="@{/location}">
+        <form th:method="GET" th:action="@{/locations}">
             <div class="d-flex my-4">
                 <div class="input-group location-search-input-group me-3">
                     <input class="form-control" type="text" name="name" placeholder="Enter location" required>
