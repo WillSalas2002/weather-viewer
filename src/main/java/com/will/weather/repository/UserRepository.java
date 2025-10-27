@@ -1,6 +1,6 @@
 package com.will.weather.repository;
 
-import com.will.weather.dto.UserLocationView;
+import com.will.weather.dto.UserLocationData;
 import com.will.weather.model.User;
 
 import java.util.Optional;
@@ -12,5 +12,7 @@ public interface UserRepository {
 
     Long save(User user);
 
-    UserLocationView findUserWithLocationsBySession(UUID sessionId);
+    UserLocationData findUserWithLocationsByUserId(Long userId);
+
+    Optional<Long> findUserBySessionId(UUID uuid);
 }

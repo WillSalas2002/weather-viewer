@@ -1,6 +1,6 @@
 package com.will.weather.repository.impl;
 
-import com.will.weather.dto.UserLocationView;
+import com.will.weather.dto.UserLocationData;
 import com.will.weather.exception.UserAlreadyExistsException;
 import com.will.weather.model.User;
 import com.will.weather.repository.UserRepository;
@@ -30,12 +30,19 @@ public class UserRepositoryImpl implements UserRepository {
     private static final String SQL_BY_USERNAME_AND_PASSWORD =
             "SELECT u.id, u.login, u.password FROM users u WHERE u.login = ? AND u.password = ?";
     private static final String SQL_INSERT = "INSERT INTO users (login, password) VALUES (?, ?)";
-    private static final String SQL_FIND_USER_WITH_LOCATIONS_BY_SESSION = """
+    private static final String SQL_FIND_USER_ID_BY_SESSION_ID =
+"""
+SELECT u."id" FROM "public".users u
+JOIN "public".sessions s ON u.id = s.user_id
+WHERE s."id" = ?;
+""";
+    private static final String SQL_FIND_USER_WITH_LOCATIONS_BY_USER_ID =
+"""
 SELECT l."name", l.latitude, l.longitude, u.login
 FROM users u
 JOIN sessions s ON u.id = s.user_id
 JOIN locations l ON u.id = l.user_id
-WHERE s.id = ?""";
+WHERE u.id = ?""";
 
     @Override
     public Optional<User> findByUsernameAndPassword(String username, String password) {
@@ -65,22 +72,34 @@ WHERE s.id = ?""";
     }
 
     @Override
-    public UserLocationView findUserWithLocationsBySession(UUID sessionId) {
-        ArrayList<UserLocationView.LocationView> locations = new ArrayList<>();
+    public UserLocationData findUserWithLocationsByUserId(Long userId) {
+        ArrayList<UserLocationData.LocationView> locations = new ArrayList<>();
         final String[] login = new String[1];
 
         jdbcTemplate.query(
-                SQL_FIND_USER_WITH_LOCATIONS_BY_SESSION,
+                SQL_FIND_USER_WITH_LOCATIONS_BY_USER_ID,
                 rs -> {
                     login[0] = rs.getString("login");
                     locations.add(
-                            UserLocationView.LocationView.builder()
+                            UserLocationData.LocationView.builder()
                                     .withLocationName(rs.getString("name"))
                                     .withLongitude(rs.getBigDecimal("longitude"))
                                     .withLatitude(rs.getBigDecimal("latitude"))
                                     .build());
-                }, sessionId);
+                },
+                userId);
 
-        return UserLocationView.builder().withLogin(login[0]).withLocations(locations).build();
+        return UserLocationData.builder().withLogin(login[0]).withLocations(locations).build();
+    }
+
+    @Override
+    public Optional<Long> findUserBySessionId(UUID sessionId) {
+        List<Long> ids =
+                jdbcTemplate.query(
+                        SQL_FIND_USER_ID_BY_SESSION_ID,
+                        (rs, rowNum) -> rs.getLong("id"),
+                        sessionId);
+
+        return ids.stream().findFirst();
     }
 }
