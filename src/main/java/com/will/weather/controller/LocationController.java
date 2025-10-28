@@ -1,10 +1,10 @@
 package com.will.weather.controller;
 
 import com.will.weather.client.dto.LocationResponse;
-import com.will.weather.constants.ApiPaths;
-import com.will.weather.constants.HtmlPages;
+import com.will.weather.constants.AppConstants;
 import com.will.weather.dto.LocationDto;
 import com.will.weather.service.LocationService;
+import com.will.weather.util.CookieHelper;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -23,24 +23,25 @@ import java.util.Optional;
 
 @Slf4j
 @Controller
-@RequestMapping(ApiPaths.LOCATION)
+@RequestMapping(AppConstants.LOCATION_PATH)
 @RequiredArgsConstructor
-public class LocationController extends BaseController {
+public class LocationController {
 
     private final LocationService locationService;
+    private final CookieHelper cookieHelper;
 
     @GetMapping
     public String getLocations(@RequestParam(name = "name") String name, Model model) {
         List<LocationResponse> locations = locationService.getAll(name);
         model.addAttribute("locations", locations);
         model.addAttribute("location", new LocationDto());
-        return HtmlPages.SEARCH_RESULTS;
+        return AppConstants.SEARCH_RESULTS_PAGE;
     }
 
-    @PostMapping(ApiPaths.ADD_LOCATION)
+    @PostMapping(AppConstants.ADD_LOCATION_PATH)
     public String add(HttpServletRequest request, LocationDto location) {
-        Optional<String> sessionIdOptional = readCookie(request);
+        Optional<String> sessionIdOptional = cookieHelper.readCookie(request);
         locationService.save(location, sessionIdOptional.get());
-        return "redirect:" + ApiPaths.HOME;
+        return "redirect:" + AppConstants.HOME_PATH;
     }
 }

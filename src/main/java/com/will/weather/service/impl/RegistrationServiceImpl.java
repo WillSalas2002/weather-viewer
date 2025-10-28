@@ -9,6 +9,7 @@ import com.will.weather.service.RegistrationService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -21,6 +22,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     private final SessionRepository sessionRepository;
 
     @Override
+    @Transactional
     public UUID registerUser(String username, String password) {
         Long savedUserId = userRepository.save(new User(username, password));
         UUID sessionId = UUID.randomUUID();

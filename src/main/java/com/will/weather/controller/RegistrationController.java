@@ -1,9 +1,9 @@
 package com.will.weather.controller;
 
-import com.will.weather.constants.ApiPaths;
-import com.will.weather.constants.HtmlPages;
+import com.will.weather.constants.AppConstants;
 import com.will.weather.dto.RegistrationDto;
 import com.will.weather.service.RegistrationService;
+import com.will.weather.util.CookieHelper;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -20,19 +20,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.UUID;
 
 @Controller
-@RequestMapping(ApiPaths.AUTH)
+@RequestMapping(AppConstants.AUTH_PATH)
 @RequiredArgsConstructor
-public class RegistrationController extends BaseController {
+public class RegistrationController {
 
     private final RegistrationService registrationService;
+    private final CookieHelper cookieHelper;
 
-    @GetMapping(ApiPaths.REGISTRATION)
+    @GetMapping(AppConstants.REGISTRATION_PATH)
     public String registration(Model model) {
         model.addAttribute("registrationDto", new RegistrationDto());
-        return HtmlPages.REGISTRATION;
+        return AppConstants.REGISTRATION_PAGE;
     }
 
-    @PostMapping(ApiPaths.REGISTRATION)
+    @PostMapping(AppConstants.REGISTRATION_PATH)
     public String register(
             HttpServletResponse response,
             Model model,
@@ -40,13 +41,13 @@ public class RegistrationController extends BaseController {
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            return HtmlPages.REGISTRATION;
+            return AppConstants.REGISTRATION_PAGE;
         }
         UUID sessionId =
                 registrationService.registerUser(
                         registrationDto.getUsername(), registrationDto.getPassword());
-        attachCookieToUser(response, sessionId);
+        cookieHelper.attachCookieToUser(response, sessionId);
         model.addAttribute("registrationDto", registrationDto);
-        return "redirect:" + ApiPaths.HOME;
+        return "redirect:" + AppConstants.HOME_PATH;
     }
 }

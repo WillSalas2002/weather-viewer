@@ -1,9 +1,9 @@
 package com.will.weather.controller;
 
-import com.will.weather.constants.ApiPaths;
-import com.will.weather.constants.HtmlPages;
+import com.will.weather.constants.AppConstants;
 import com.will.weather.dto.LoginDto;
 import com.will.weather.service.LoginService;
+import com.will.weather.util.CookieHelper;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -24,24 +24,23 @@ import java.util.UUID;
 
 @Slf4j
 @Controller
-@RequestMapping(ApiPaths.AUTH)
+@RequestMapping(AppConstants.AUTH_PATH)
 @RequiredArgsConstructor
-public class LoginController extends BaseController {
+public class LoginController {
 
     private final LoginService loginService;
+    private final CookieHelper cookieHelper;
 
-    @GetMapping(ApiPaths.LOGIN)
+    @GetMapping(AppConstants.LOGIN_PATH)
     public String login(Model model, HttpServletRequest request) {
-        Optional<String> sessionIdOptional = readCookie(request);
-        if (sessionIdOptional.isPresent()
-                && !loginService.isSessionExpired(sessionIdOptional.get())) {
-            return "redirect:" + ApiPaths.HOME;
+        if (isSessionValid(request)) {
+            return "redirect:" + AppConstants.HOME_PATH;
         }
         model.addAttribute("loginDto", new LoginDto());
-        return HtmlPages.LOGIN;
+        return AppConstants.LOGIN_PAGE;
     }
 
-    @PostMapping(ApiPaths.LOGIN)
+    @PostMapping(AppConstants.LOGIN_PATH)
     public String login(
             Model model,
             @Valid LoginDto loginDto,
@@ -49,12 +48,18 @@ public class LoginController extends BaseController {
             HttpServletResponse response) {
 
         if (bindingResult.hasErrors()) {
-            return HtmlPages.LOGIN;
+            return AppConstants.LOGIN_PAGE;
         }
         UUID sessionId = loginService.login(loginDto);
-        attachCookieToUser(response, sessionId);
+        cookieHelper.attachCookieToUser(response, sessionId);
         model.addAttribute("username", loginDto.getUsername());
 
-        return "redirect:" + ApiPaths.HOME;
+        return "redirect:" + AppConstants.HOME_PATH;
+    }
+
+    private boolean isSessionValid(HttpServletRequest request) {
+        Optional<String> sessionIdOptional = cookieHelper.readCookie(request);
+        return sessionIdOptional.isPresent()
+                && !loginService.isSessionExpired(sessionIdOptional.get());
     }
 }

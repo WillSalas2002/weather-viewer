@@ -1,10 +1,10 @@
 package com.will.weather.controller;
 
-import com.will.weather.constants.ApiPaths;
-import com.will.weather.constants.HtmlPages;
+import com.will.weather.constants.AppConstants;
 import com.will.weather.dto.ForecastView;
 import com.will.weather.service.LoginService;
 import com.will.weather.service.UserService;
+import com.will.weather.util.CookieHelper;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -19,24 +19,30 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-@RequestMapping(ApiPaths.HOME)
+@RequestMapping(AppConstants.HOME_PATH)
 @RequiredArgsConstructor
-public class HomeController extends BaseController {
+public class HomeController {
 
     private final UserService userService;
     private final LoginService loginService;
+    private final CookieHelper cookieHelper;
 
     @GetMapping
     public String getHomePage(HttpServletRequest request, Model model) {
-        Optional<String> sessionIdOptional = readCookie(request);
-        if (sessionIdOptional.isPresent()
-                && !loginService.isSessionExpired(sessionIdOptional.get())) {
+        if (isSessionValid(request)) {
             List<ForecastView> forecastView =
-                    userService.findUserWithLocationsBySession(sessionIdOptional.get());
-
+                    userService.findUserWithLocationsBySession(
+                            cookieHelper.readCookie(request).get());
             model.addAttribute("forecastView", forecastView);
-            return HtmlPages.HOME;
+
+            return AppConstants.HOME_PAGE;
         }
-        return "redirect:" + ApiPaths.AUTH + ApiPaths.LOGIN;
+        return "redirect:" + AppConstants.AUTH_PATH + AppConstants.LOGIN_PATH;
+    }
+
+    private boolean isSessionValid(HttpServletRequest request) {
+        Optional<String> sessionIdOptional = cookieHelper.readCookie(request);
+        return sessionIdOptional.isPresent()
+                && !loginService.isSessionExpired(sessionIdOptional.get());
     }
 }

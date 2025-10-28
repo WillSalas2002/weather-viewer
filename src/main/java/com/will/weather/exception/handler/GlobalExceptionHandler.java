@@ -1,7 +1,6 @@
 package com.will.weather.exception.handler;
 
-import com.will.weather.constants.ApiPaths;
-import com.will.weather.constants.HtmlPages;
+import com.will.weather.constants.AppConstants;
 import com.will.weather.dto.LoginDto;
 import com.will.weather.dto.RegistrationDto;
 import com.will.weather.exception.InvalidCredentialsException;
@@ -22,7 +21,7 @@ public class GlobalExceptionHandler {
         ModelAndView mav = new ModelAndView();
         mav.addObject("errorMessage", e.getMessage());
         mav.addObject("loginDto", new LoginDto());
-        mav.setViewName(HtmlPages.LOGIN);
+        mav.setViewName(AppConstants.LOGIN_PAGE);
         return mav;
     }
 
@@ -31,23 +30,22 @@ public class GlobalExceptionHandler {
         ModelAndView mav = new ModelAndView();
         mav.addObject("errorMessage", e.getMessage());
         mav.addObject("registrationDto", new RegistrationDto());
-        mav.setViewName(HtmlPages.REGISTRATION);
+        mav.setViewName(AppConstants.REGISTRATION_PAGE);
         return mav;
     }
 
     @ExceptionHandler(value = LocationAlreadyExistsException.class)
     public ModelAndView handleUserAlreadyExists(LocationAlreadyExistsException e) {
         ModelAndView mav = new ModelAndView();
-        mav.setViewName("redirect:" + ApiPaths.HOME);
+        mav.setViewName("redirect:" + AppConstants.HOME_PATH);
         return mav;
     }
 
     @ExceptionHandler(value = Exception.class)
-    public ModelAndView handleGlobalException(
-            HttpServletRequest request, Exception e) {
+    public ModelAndView handleGlobalException(HttpServletRequest request, Exception e) {
         ModelAndView mav = new ModelAndView();
         mav.addObject("url", request.getRequestURL());
-        mav.setViewName("redirect:" + ApiPaths.ERROR);
+        mav.setViewName("redirect:" + AppConstants.ERROR_PATH);
         return mav;
     }
 }

@@ -1,16 +1,15 @@
 package com.will.weather.controller;
 
-import com.will.weather.constants.ApiPaths;
-import com.will.weather.constants.HtmlPages;
+import com.will.weather.constants.AppConstants;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.unbescape.html.HtmlEscape;
 
 @Controller
-@RequestMapping(ApiPaths.ERROR)
-public class ErrorController extends BaseController {
+@RequestMapping(AppConstants.ERROR_PATH)
+public class ErrorController {
 
     public String error() {
-        return HtmlPages.ERROR;
+        return AppConstants.ERROR_PAGE;
     }
 }
