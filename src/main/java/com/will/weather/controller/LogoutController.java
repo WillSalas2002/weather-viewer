@@ -1,5 +1,6 @@
 package com.will.weather.controller;
 
+import com.will.weather.constants.ApiPaths;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -12,16 +13,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Slf4j
 @Controller
-@RequestMapping("/auth")
+@RequestMapping(ApiPaths.AUTH)
 @RequiredArgsConstructor
 public class LogoutController {
     
-    @GetMapping("/logout")
+    @GetMapping(ApiPaths.LOGOUT)
     public String logout(HttpServletResponse response) {
         Cookie cookie = new Cookie("sessionId", "");
         cookie.setPath("/");
         cookie.setMaxAge(0);
         response.addCookie(cookie);
-        return "redirect:/auth/login";
+        return "redirect:" + ApiPaths.AUTH + ApiPaths.LOGIN;
     }
 }

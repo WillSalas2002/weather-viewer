@@ -1,9 +1,10 @@
 package com.will.weather.controller;
 
+import com.will.weather.constants.ApiPaths;
+import com.will.weather.constants.HtmlPages;
 import com.will.weather.dto.LoginDto;
 import com.will.weather.service.LoginService;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -18,29 +19,29 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
 @Controller
-@RequestMapping("/auth")
+@RequestMapping(ApiPaths.AUTH)
 @RequiredArgsConstructor
-public class LoginController {
+public class LoginController extends BaseController {
 
     private final LoginService loginService;
 
-    @GetMapping("/login")
+    @GetMapping(ApiPaths.LOGIN)
     public String login(Model model, HttpServletRequest request) {
         Optional<String> sessionIdOptional = readCookie(request);
-        if (isSessionValid(sessionIdOptional)) {
-            return "redirect:/weather";
+        if (sessionIdOptional.isPresent()
+                && !loginService.isSessionExpired(sessionIdOptional.get())) {
+            return "redirect:" + ApiPaths.HOME;
         }
         model.addAttribute("loginDto", new LoginDto());
-        return "login";
+        return HtmlPages.LOGIN;
     }
 
-    @PostMapping("/login")
+    @PostMapping(ApiPaths.LOGIN)
     public String login(
             Model model,
             @Valid LoginDto loginDto,
@@ -48,33 +49,12 @@ public class LoginController {
             HttpServletResponse response) {
 
         if (bindingResult.hasErrors()) {
-            return "login";
+            return HtmlPages.LOGIN;
         }
         UUID sessionId = loginService.login(loginDto);
         attachCookieToUser(response, sessionId);
         model.addAttribute("username", loginDto.getUsername());
-        return "redirect:/weather";
-    }
 
-    private boolean isSessionValid(Optional<String> sessionIdOptional) {
-        return sessionIdOptional.isPresent()
-                && !loginService.isSessionExpired(sessionIdOptional.get());
-    }
-
-    private Optional<String> readCookie(HttpServletRequest request) {
-        if (request.getCookies() != null) {
-            return Arrays.stream(request.getCookies())
-                    .filter(c -> "sessionId".equals(c.getName()))
-                    .map(Cookie::getValue)
-                    .findAny();
-        }
-        return Optional.empty();
-    }
-
-    private static void attachCookieToUser(HttpServletResponse response, UUID sessionId) {
-        Cookie cookie = new Cookie("sessionId", sessionId.toString());
-        cookie.setPath("/");
-        cookie.setMaxAge(3600);
-        response.addCookie(cookie);
+        return "redirect:" + ApiPaths.HOME;
     }
 }

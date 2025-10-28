@@ -1,9 +1,10 @@
 package com.will.weather.controller;
 
+import com.will.weather.constants.ApiPaths;
+import com.will.weather.constants.HtmlPages;
 import com.will.weather.dto.RegistrationDto;
 import com.will.weather.service.RegistrationService;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
@@ -19,19 +20,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.UUID;
 
 @Controller
-@RequestMapping("/auth")
+@RequestMapping(ApiPaths.AUTH)
 @RequiredArgsConstructor
-public class RegistrationController {
+public class RegistrationController extends BaseController {
 
     private final RegistrationService registrationService;
 
-    @GetMapping("/registration")
+    @GetMapping(ApiPaths.REGISTRATION)
     public String registration(Model model) {
         model.addAttribute("registrationDto", new RegistrationDto());
-        return "registration";
+        return HtmlPages.REGISTRATION;
     }
 
-    @PostMapping("/registration")
+    @PostMapping(ApiPaths.REGISTRATION)
     public String register(
             HttpServletResponse response,
             Model model,
@@ -39,20 +40,13 @@ public class RegistrationController {
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            return "registration";
+            return HtmlPages.REGISTRATION;
         }
         UUID sessionId =
                 registrationService.registerUser(
                         registrationDto.getUsername(), registrationDto.getPassword());
         attachCookieToUser(response, sessionId);
         model.addAttribute("registrationDto", registrationDto);
-        return "redirect:/weather";
-    }
-
-    private static void attachCookieToUser(HttpServletResponse response, UUID sessionId) {
-        Cookie cookie = new Cookie("sessionId", sessionId.toString());
-        cookie.setPath("/");
-        cookie.setMaxAge(3600);
-        response.addCookie(cookie);
+        return "redirect:" + ApiPaths.HOME;
     }
 }
