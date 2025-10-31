@@ -44,7 +44,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = Exception.class)
     public ModelAndView handleGlobalException(HttpServletRequest request, Exception e) {
         ModelAndView mav = new ModelAndView();
-        mav.addObject("url", request.getRequestURL());
         mav.setViewName("redirect:" + AppConstants.ERROR_PATH);
         return mav;
     }
