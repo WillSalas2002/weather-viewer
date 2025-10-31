@@ -7,12 +7,13 @@ import com.will.weather.exception.InvalidCredentialsException;
 import com.will.weather.exception.LocationAlreadyExistsException;
 import com.will.weather.exception.UserAlreadyExistsException;
 
-import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 
+@Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -42,9 +43,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = Exception.class)
-    public ModelAndView handleGlobalException(HttpServletRequest request, Exception e) {
+    public ModelAndView handleGlobalException(Exception e) {
         ModelAndView mav = new ModelAndView();
         mav.setViewName("redirect:" + AppConstants.ERROR_PATH);
+        log.error(e.getMessage());
         return mav;
     }
 }

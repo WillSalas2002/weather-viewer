@@ -63,7 +63,7 @@ WHERE u.id = ?""";
                         return ps;
                     },
                     keyHolder);
-            return keyHolder.getKeyAs(Long.class);
+            return new Long(keyHolder.getKey().intValue());
         } catch (DuplicateKeyException e) {
             throw new UserAlreadyExistsException(
                     String.format("Username [%s] is already taken", user.getLogin()));

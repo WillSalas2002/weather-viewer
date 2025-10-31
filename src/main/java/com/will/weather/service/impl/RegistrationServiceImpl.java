@@ -24,7 +24,9 @@ public class RegistrationServiceImpl implements RegistrationService {
     @Override
     @Transactional
     public UUID registerUser(String username, String password) {
-        Long savedUserId = userRepository.save(new User(username, password));
+        Long savedUserId =
+                userRepository.save(
+                        User.builder().withLogin(username).withPassword(password).build());
         UUID sessionId = UUID.randomUUID();
         sessionRepository.save(
                 new Session(sessionId, savedUserId, LocalDateTime.now().plusHours(1)));
