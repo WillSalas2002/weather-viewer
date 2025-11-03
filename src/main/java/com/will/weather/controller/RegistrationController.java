@@ -5,6 +5,7 @@ import com.will.weather.dto.RegistrationDto;
 import com.will.weather.service.RegistrationService;
 import com.will.weather.util.CookieHelper;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
@@ -35,6 +36,7 @@ public class RegistrationController {
 
     @PostMapping(AppConstants.REGISTRATION_PATH)
     public String register(
+            HttpServletRequest request,
             HttpServletResponse response,
             Model model,
             @Valid RegistrationDto registrationDto,
@@ -47,6 +49,7 @@ public class RegistrationController {
                 registrationService.registerUser(
                         registrationDto.getUsername(), registrationDto.getPassword());
         cookieHelper.attachCookieToUser(response, sessionId);
+        request.getSession().setAttribute(AppConstants.SESSION_NAME, registrationDto.getUsername());
         model.addAttribute("registrationDto", registrationDto);
         return "redirect:" + AppConstants.HOME_PATH;
     }

@@ -1,7 +1,9 @@
 package com.will.weather.service.impl;
 
 import com.will.weather.client.WeatherClient;
+import com.will.weather.client.dto.ForecastDto;
 import com.will.weather.client.dto.LocationResponse;
+import com.will.weather.dto.ForecastView;
 import com.will.weather.dto.LocationDto;
 import com.will.weather.model.Location;
 import com.will.weather.repository.LocationRepository;
@@ -47,5 +49,35 @@ public class LocationServiceImpl implements LocationService {
                         .withLongitude(location.getLongitude())
                         .withLatitude(location.getLatitude())
                         .build());
+    }
+
+    @Override
+    public List<ForecastView> findLocations(String username) {
+
+        List<Location> locations = locationRepository.findLocationsByUsername(username);
+        return locations.stream()
+                .map(
+                        location -> {
+                            ForecastDto forecastDto =
+                                    weatherClient.getForecastByLocation(
+                                            location.getLatitude(), location.getLongitude());
+                            return mapToForecastView(forecastDto);
+                        })
+                .toList();
+    }
+
+    // TODO: need to convert from farangeit to celcius
+    private ForecastView mapToForecastView(ForecastDto forecastDto) {
+        return new ForecastView(
+                forecastDto.main().temp(),
+                forecastDto.main().feelsLike(),
+                forecastDto.main().humidity(),
+                forecastDto.weathers().getFirst().main(),
+                forecastDto.weathers().getFirst().description(),
+                forecastDto.sys().country(),
+                forecastDto.sys().sunrise(),
+                forecastDto.sys().sunset(),
+                forecastDto.timezone(),
+                forecastDto.name());
     }
 }

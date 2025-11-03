@@ -31,10 +31,14 @@ public class LocationController {
     private final CookieHelper cookieHelper;
 
     @GetMapping
-    public String getLocations(@RequestParam(name = "name") String name, Model model) {
+    public String getLocations(
+            @RequestParam(name = "name") String name, HttpServletRequest request, Model model) {
         List<LocationResponse> locations = locationService.getAll(name);
         model.addAttribute("locations", locations);
         model.addAttribute("location", new LocationDto());
+        model.addAttribute(
+                AppConstants.SESSION_NAME,
+                request.getSession().getAttribute(AppConstants.SESSION_NAME));
         return AppConstants.SEARCH_RESULTS_PAGE;
     }
 

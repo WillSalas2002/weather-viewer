@@ -2,8 +2,8 @@ package com.will.weather.controller;
 
 import com.will.weather.constants.AppConstants;
 import com.will.weather.dto.ForecastView;
+import com.will.weather.service.LocationService;
 import com.will.weather.service.LoginService;
-import com.will.weather.service.UserService;
 import com.will.weather.util.CookieHelper;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,7 +23,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class HomeController {
 
-    private final UserService userService;
+    private final LocationService locationService;
     private final LoginService loginService;
     private final CookieHelper cookieHelper;
 
@@ -31,10 +31,12 @@ public class HomeController {
     public String getHomePage(HttpServletRequest request, Model model) {
         if (isSessionValid(request)) {
             List<ForecastView> forecastView =
-                    userService.findUserWithLocationsBySession(
-                            cookieHelper.readCookie(request).get());
+                    locationService.findLocations(
+                            (String) request.getSession().getAttribute(AppConstants.SESSION_NAME));
             model.addAttribute("forecastView", forecastView);
-
+            model.addAttribute(
+                    AppConstants.SESSION_NAME,
+                    request.getSession().getAttribute(AppConstants.SESSION_NAME));
             return AppConstants.HOME_PAGE;
         }
         return "redirect:" + AppConstants.AUTH_PATH + AppConstants.LOGIN_PATH;

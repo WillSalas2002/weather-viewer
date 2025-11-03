@@ -1,7 +1,6 @@
 package com.will.weather.dto;
 
 public record ForecastView(
-        String login,
         double temp,
         double feelsLike,
         double humidity,

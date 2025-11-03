@@ -21,6 +21,7 @@ public class AppConstants {
     public static final String SEARCH_RESULTS_PAGE = "search-results";
     public static final String HOME_PAGE = "index";
 
-    // Cookie names
+    // Cookies and Sessions
     public static final String COOKIE_NAME = "sessionId";
+    public static final String SESSION_NAME = "username";
 }

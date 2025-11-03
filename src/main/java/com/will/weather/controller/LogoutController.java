@@ -3,6 +3,7 @@ package com.will.weather.controller;
 import com.will.weather.constants.AppConstants;
 
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import lombok.RequiredArgsConstructor;
@@ -19,11 +20,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class LogoutController {
 
     @GetMapping(AppConstants.LOGOUT_PATH)
-    public String logout(HttpServletResponse response) {
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
         Cookie cookie = new Cookie(AppConstants.COOKIE_NAME, "");
         cookie.setPath("/");
         cookie.setMaxAge(0);
         response.addCookie(cookie);
+        request.getSession().invalidate();
         return "redirect:" + AppConstants.AUTH_PATH + AppConstants.LOGIN_PATH;
     }
 }
