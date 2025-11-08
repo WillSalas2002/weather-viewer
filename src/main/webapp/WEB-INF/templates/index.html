@@ -42,9 +42,13 @@
             <div class="row" th:if="${forecastView != null}">
                 <div class="col-12 col-lg-3 col-md-6 mb-4" th:each="forecast: ${forecastView}">
                     <div class="card h-100 position-relative weather-card">
-                        <div class="position-absolute weather-card-delete-form">
-                            <button class="btn-close" aria-label="Delete"></button>
-                        </div>
+                        <form class="position-absolute weather-card-delete-form" th:method="DELETE"
+                              th:action="@{/locations}" th:object="${removeLocationDto}">
+                            <input type="hidden" name="login" th:value="${username}"/>
+                            <input type="hidden" name="longitude" th:value="${forecast.longitude}"/>
+                            <input type="hidden" name="latitude" th:value="${forecast.latitude}"/>
+                            <button type="submit" class="btn-close" aria-label="Delete"></button>
+                        </form>
                         <img class="card-img-top img-fluid"
                              src="https://openweathermap.org/img/wn/01n@4x.png"
                              alt="Weather icon">

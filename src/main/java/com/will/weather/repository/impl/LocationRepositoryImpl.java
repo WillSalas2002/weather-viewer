@@ -12,6 +12,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Slf4j
@@ -30,6 +31,15 @@ public class LocationRepositoryImpl implements LocationRepository {
     FROM locations l
     JOIN users u ON l.user_id = u.id
     WHERE u.login = ?
+""";
+    private static final String SQL_DELETE =
+"""
+    DELETE FROM locations l
+    USING users u
+    WHERE l.user_id = u.id
+      AND u.login = ?
+      AND l.longitude = ?
+      AND l.latitude = ?
 """;
 
     private final LocationMapper locationMapper;
@@ -57,5 +67,15 @@ public class LocationRepositoryImpl implements LocationRepository {
     @Override
     public List<Location> findLocationsByUsername(String username) {
         return jdbcTemplate.query(SQL_SELECT, locationMapper, username);
+    }
+
+    @Override
+    public void deleteLocationByLogin(String login, BigDecimal latitude, BigDecimal longitude) {
+        int rows = jdbcTemplate.update(SQL_DELETE, login, longitude, latitude);
+        String logMessage =
+                rows >= 1
+                        ? String.format("Deletion of the %s's location was successful", login)
+                        : String.format("Nothing got deleted from user %s", login);
+        log.info(logMessage);
     }
 }

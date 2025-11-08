@@ -53,6 +53,7 @@ public class HomeController {
 
 /*
     1) converting temperature from faranheit to celcius
+    4) deleting a location from user
     2) loading corresponding weather icons
-    4) encoding user password
+    3) Cover code with tests
 */
