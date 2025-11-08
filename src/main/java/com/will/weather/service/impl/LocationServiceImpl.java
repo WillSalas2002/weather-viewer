@@ -13,10 +13,10 @@ import com.will.weather.service.LocationService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -32,22 +32,22 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public void save(LocationDto location, String sessionId) {
+    @Transactional
+    public void save(LocationDto locationDto, String login) {
         Long userId =
                 userRepository
-                        .findUserIdBySessionId(UUID.fromString(sessionId))
+                        .findUserIdByLogin(login)
                         .orElseThrow(
                                 () ->
                                         new NoSuchElementException(
                                                 String.format(
-                                                        "Session with id [%s] has no associated user",
-                                                        sessionId)));
+                                                        "No such user with login %s", login)));
         locationRepository.save(
                 Location.builder()
                         .withUserId(userId)
-                        .withName(location.getName())
-                        .withLongitude(location.getLongitude())
-                        .withLatitude(location.getLatitude())
+                        .withName(locationDto.getName())
+                        .withLatitude(locationDto.getLatitude())
+                        .withLongitude(locationDto.getLongitude())
                         .build());
     }
 

@@ -12,8 +12,7 @@ CREATE TABLE "public".locations(
     userId INT NOT NULL,
     latitude DECIMAL NOT NULL,
     longitude DECIMAL NOT NULL,
-    FOREIGN KEY (userId) REFERENCES users(id),
-    UNIQUE (latitude, longitude)
+    FOREIGN KEY (userId) REFERENCES users(id)
 );
 
 

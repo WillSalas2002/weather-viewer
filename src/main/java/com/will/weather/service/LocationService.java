@@ -10,7 +10,7 @@ public interface LocationService {
 
     List<LocationResponse> getAll(String name);
 
-    void save(LocationDto location, String sessionId);
+    void save(LocationDto location, String login);
 
-    List<ForecastView> findLocations(String username);
+    List<ForecastView> findLocations(String login);
 }

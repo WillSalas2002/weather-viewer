@@ -33,10 +33,12 @@ public class HomeController {
             List<ForecastView> forecastView =
                     locationService.findLocations(
                             (String) request.getSession().getAttribute(AppConstants.SESSION_NAME));
+
             model.addAttribute("forecastView", forecastView);
             model.addAttribute(
                     AppConstants.SESSION_NAME,
                     request.getSession().getAttribute(AppConstants.SESSION_NAME));
+
             return AppConstants.HOME_PAGE;
         }
         return "redirect:" + AppConstants.AUTH_PATH + AppConstants.LOGIN_PATH;

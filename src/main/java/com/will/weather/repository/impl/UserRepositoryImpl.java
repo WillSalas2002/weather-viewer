@@ -16,30 +16,19 @@ import org.springframework.stereotype.Repository;
 import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository
 @AllArgsConstructor
 public class UserRepositoryImpl implements UserRepository {
 
-    private final JdbcTemplate jdbcTemplate;
-    private final UserRowMapper userRowMapper;
-
     private static final String SQL_BY_USERNAME_AND_PASSWORD =
             "SELECT u.id, u.login, u.password FROM users u WHERE u.login = ? AND u.password = ?";
     private static final String SQL_INSERT = "INSERT INTO users (login, password) VALUES (?, ?)";
-    private static final String SQL_FIND_USER_ID_BY_SESSION_ID =
-"""
-SELECT u."id" FROM "public".users u
-JOIN "public".sessions s ON u.id = s.user_id
-WHERE s."id" = ?;
-""";
-    private static final String SQL_FIND_USER_WITH_LOCATIONS_BY_USER_ID =
-"""
-SELECT l."name", l.latitude, l.longitude, u.login
-FROM users u
-JOIN locations l ON u.id = l.user_id
-WHERE u.id = ?""";
+    private static final String SQL_FIND_USER_ID_BY_LOGIN =
+            "SELECT u.id FROM users u WHERE u.login = ?";
+
+    private final JdbcTemplate jdbcTemplate;
+    private final UserRowMapper userRowMapper;
 
     @Override
     public Optional<User> findByUsernameAndPassword(String username, String password) {
@@ -69,12 +58,10 @@ WHERE u.id = ?""";
     }
 
     @Override
-    public Optional<Long> findUserIdBySessionId(UUID sessionId) {
+    public Optional<Long> findUserIdByLogin(String login) {
         List<Long> ids =
                 jdbcTemplate.query(
-                        SQL_FIND_USER_ID_BY_SESSION_ID,
-                        (rs, rowNum) -> rs.getLong("id"),
-                        sessionId);
+                        SQL_FIND_USER_ID_BY_LOGIN, (rs, rowNum) -> rs.getLong("id"), login);
 
         return ids.stream().findFirst();
     }

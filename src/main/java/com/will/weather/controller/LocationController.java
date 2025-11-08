@@ -4,7 +4,6 @@ import com.will.weather.client.dto.LocationResponse;
 import com.will.weather.constants.AppConstants;
 import com.will.weather.dto.LocationDto;
 import com.will.weather.service.LocationService;
-import com.will.weather.util.CookieHelper;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Controller
@@ -28,7 +26,6 @@ import java.util.Optional;
 public class LocationController {
 
     private final LocationService locationService;
-    private final CookieHelper cookieHelper;
 
     @GetMapping
     public String getLocations(
@@ -44,8 +41,7 @@ public class LocationController {
 
     @PostMapping(AppConstants.ADD_LOCATION_PATH)
     public String add(HttpServletRequest request, LocationDto location) {
-        Optional<String> sessionIdOptional = cookieHelper.readCookie(request);
-        locationService.save(location, sessionIdOptional.get());
+        locationService.save(location, (String) request.getSession().getAttribute(AppConstants.SESSION_NAME));
         return "redirect:" + AppConstants.HOME_PATH;
     }
 }

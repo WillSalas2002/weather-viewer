@@ -3,7 +3,6 @@ package com.will.weather.repository;
 import com.will.weather.model.User;
 
 import java.util.Optional;
-import java.util.UUID;
 
 public interface UserRepository {
 
@@ -11,5 +10,5 @@ public interface UserRepository {
 
     Long save(User user);
 
-    Optional<Long> findUserIdBySessionId(UUID uuid);
+    Optional<Long> findUserIdByLogin(String login);
 }

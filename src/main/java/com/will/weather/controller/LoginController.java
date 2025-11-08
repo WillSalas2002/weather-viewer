@@ -42,7 +42,6 @@ public class LoginController {
 
     @PostMapping(AppConstants.LOGIN_PATH)
     public String login(
-            Model model,
             @Valid LoginDto loginDto,
             BindingResult bindingResult,
             HttpServletResponse response,

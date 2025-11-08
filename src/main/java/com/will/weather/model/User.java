@@ -5,8 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -15,5 +13,4 @@ public class User {
     private Long id;
     private String login;
     private String password;
-    private Set<Long> locationIds;
 }
