@@ -59,7 +59,8 @@ public class LoginController {
 
     private boolean isSessionValid(HttpServletRequest request) {
         Optional<String> sessionIdOptional = cookieHelper.readCookie(request);
-        return sessionIdOptional.isPresent()
+        return request.getSession().getAttribute(AppConstants.SESSION_NAME) != null
+                && sessionIdOptional.isPresent()
                 && !loginService.isSessionExpired(sessionIdOptional.get());
     }
 }

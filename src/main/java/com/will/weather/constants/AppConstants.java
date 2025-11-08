@@ -8,7 +8,7 @@ public class AppConstants {
     public static final String AUTH_PATH = "/auth";
     public static final String LOGIN_PATH = "/login";
     public static final String REGISTRATION_PATH = "/registration";
-    public static final String LOGOUT_PATH = AUTH_PATH + "/logout";
+    public static final String LOGOUT_PATH = "/logout";
     public static final String HOME_PATH = "/weather";
     public static final String LOCATION_PATH = "/locations";
     public static final String ADD_LOCATION_PATH = "/add";
