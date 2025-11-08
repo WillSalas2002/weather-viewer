@@ -22,7 +22,7 @@ import java.util.Optional;
 public class UserRepositoryImpl implements UserRepository {
 
     private static final String SQL_BY_USERNAME_AND_PASSWORD =
-            "SELECT u.id, u.login, u.password FROM users u WHERE u.login = ? AND u.password = ?";
+            "SELECT u.id, u.login, u.password FROM users u WHERE u.login = ?";
     private static final String SQL_INSERT = "INSERT INTO users (login, password) VALUES (?, ?)";
     private static final String SQL_FIND_USER_ID_BY_LOGIN =
             "SELECT u.id FROM users u WHERE u.login = ?";
@@ -31,10 +31,9 @@ public class UserRepositoryImpl implements UserRepository {
     private final UserRowMapper userRowMapper;
 
     @Override
-    public Optional<User> findByUsernameAndPassword(String username, String password) {
-        List<User> users =
-                jdbcTemplate.query(SQL_BY_USERNAME_AND_PASSWORD, userRowMapper, username, password);
-        return users.stream().findFirst();
+    public Optional<User> findByLogin(String login) {
+        return jdbcTemplate.query(SQL_BY_USERNAME_AND_PASSWORD, userRowMapper, login).stream()
+                .findFirst();
     }
 
     @Override

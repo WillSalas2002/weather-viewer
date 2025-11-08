@@ -50,9 +50,10 @@ public class LoginController {
         if (bindingResult.hasErrors()) {
             return AppConstants.LOGIN_PAGE;
         }
+        log.info("User [{}] is trying to login", loginDto.getLogin());
         UUID sessionId = loginService.login(loginDto);
         cookieHelper.attachCookieToUser(response, sessionId);
-        request.getSession().setAttribute(AppConstants.SESSION_NAME, loginDto.getUsername());
+        request.getSession().setAttribute(AppConstants.SESSION_NAME, loginDto.getLogin());
         return "redirect:" + AppConstants.HOME_PATH;
     }
 

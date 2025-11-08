@@ -6,6 +6,7 @@ import com.will.weather.dto.RegistrationDto;
 import com.will.weather.exception.InvalidCredentialsException;
 import com.will.weather.exception.LocationAlreadyExistsException;
 import com.will.weather.exception.UserAlreadyExistsException;
+import com.will.weather.exception.UserNotFoundException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,17 +18,19 @@ import org.springframework.web.servlet.ModelAndView;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(value = UserNotFoundException.class)
+    public ModelAndView handleUserNotFound(UserNotFoundException e) {
+        return prepareModelAndView(e);
+    }
+
     @ExceptionHandler(value = InvalidCredentialsException.class)
     public ModelAndView handleInvalidCredentials(InvalidCredentialsException e) {
-        ModelAndView mav = new ModelAndView();
-        mav.addObject("errorMessage", e.getMessage());
-        mav.addObject("loginDto", new LoginDto());
-        mav.setViewName(AppConstants.LOGIN_PAGE);
-        return mav;
+        return prepareModelAndView(e);
     }
 
     @ExceptionHandler(value = UserAlreadyExistsException.class)
     public ModelAndView handleUserAlreadyExists(UserAlreadyExistsException e) {
+        log.error(e.getMessage());
         ModelAndView mav = new ModelAndView();
         mav.addObject("errorMessage", e.getMessage());
         mav.addObject("registrationDto", new RegistrationDto());
@@ -37,6 +40,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = LocationAlreadyExistsException.class)
     public ModelAndView handleUserAlreadyExists(LocationAlreadyExistsException e) {
+        log.error(e.getMessage());
         ModelAndView mav = new ModelAndView();
         mav.setViewName("redirect:" + AppConstants.HOME_PATH);
         return mav;
@@ -44,9 +48,18 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = Exception.class)
     public ModelAndView handleGlobalException(Exception e) {
+        log.error(e.getMessage());
         ModelAndView mav = new ModelAndView();
         mav.setViewName("redirect:" + AppConstants.ERROR_PATH);
+        return mav;
+    }
+
+    private static ModelAndView prepareModelAndView(RuntimeException e) {
         log.error(e.getMessage());
+        ModelAndView mav = new ModelAndView();
+        mav.addObject("errorMessage", e.getMessage());
+        mav.addObject("loginDto", new LoginDto());
+        mav.setViewName(AppConstants.LOGIN_PAGE);
         return mav;
     }
 }

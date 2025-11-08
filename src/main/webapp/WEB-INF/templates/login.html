@@ -31,12 +31,12 @@
         <div class="col-12 col-lg-4 col-md-6 col-sm-12">
             <form th:method="POST" th:action="@{/auth/login}" th:object="${loginDto}" class="mt-4">
                 <div class="mb-3">
-                    <label for="username" class="form-label">Username</label>
+                    <label for="login" class="form-label">Username</label>
                     <div class="input-group has-validation">
-                        <input type="text" class="form-control" id="username" name="username"
-                               th:classappend="${#fields.hasErrors('username') ? ' is-invalid' : ''}"
+                        <input type="text" class="form-control" id="login" name="login"
+                               th:classappend="${#fields.hasErrors('login') ? ' is-invalid' : ''}"
                                required value=""/>
-                        <div class="invalid-feedback" th:if="${#fields.hasErrors('username')}"
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('login')}"
                              th:errors="*{username}"></div>
                     </div>
                 </div>

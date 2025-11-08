@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.UUID;
 
+@Slf4j
 @Controller
 @RequestMapping(AppConstants.AUTH_PATH)
 @RequiredArgsConstructor
@@ -45,6 +47,7 @@ public class RegistrationController {
         if (bindingResult.hasErrors()) {
             return AppConstants.REGISTRATION_PAGE;
         }
+        log.info("User [{}] is trying to register", registrationDto.getUsername());
         UUID sessionId =
                 registrationService.registerUser(
                         registrationDto.getUsername(), registrationDto.getPassword());

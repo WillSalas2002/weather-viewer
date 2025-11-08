@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LoginDto {
     @Size(min = 3, max = 20, message = "Username should be between 3 and 20 characters long")
-    private String username;
+    private String login;
 
     @Size(min = 5, max = 20, message = "Password should be between 5 and 20 characters long")
     private String password;

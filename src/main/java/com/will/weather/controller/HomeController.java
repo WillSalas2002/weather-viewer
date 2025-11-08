@@ -50,3 +50,9 @@ public class HomeController {
                 && !loginService.isSessionExpired(sessionIdOptional.get());
     }
 }
+
+/*
+    1) converting temperature from faranheit to celcius
+    2) loading corresponding weather icons
+    4) encoding user password
+*/

@@ -5,19 +5,21 @@ import com.will.weather.client.dto.ForecastDto;
 import com.will.weather.client.dto.LocationResponse;
 import com.will.weather.dto.ForecastView;
 import com.will.weather.dto.LocationDto;
+import com.will.weather.exception.UserNotFoundException;
 import com.will.weather.model.Location;
 import com.will.weather.repository.LocationRepository;
 import com.will.weather.repository.UserRepository;
 import com.will.weather.service.LocationService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class LocationServiceImpl implements LocationService {
@@ -38,10 +40,12 @@ public class LocationServiceImpl implements LocationService {
                 userRepository
                         .findUserIdByLogin(login)
                         .orElseThrow(
-                                () ->
-                                        new NoSuchElementException(
-                                                String.format(
-                                                        "No such user with login %s", login)));
+                                () -> {
+                                    log.warn("User [{}] not found", login);
+                                    return new UserNotFoundException(
+                                            String.format("No such user with login %s", login));
+                                });
+        log.info("Adding location [{}] to the user [{}]", locationDto.getName(), login);
         locationRepository.save(
                 Location.builder()
                         .withUserId(userId)
@@ -49,12 +53,12 @@ public class LocationServiceImpl implements LocationService {
                         .withLatitude(locationDto.getLatitude())
                         .withLongitude(locationDto.getLongitude())
                         .build());
+        log.info("Successfully added location [{}] to the user [{}]", locationDto.getName(), login);
     }
 
     @Override
-    public List<ForecastView> findLocations(String username) {
-
-        List<Location> locations = locationRepository.findLocationsByUsername(username);
+    public List<ForecastView> findLocations(String login) {
+        List<Location> locations = locationRepository.findLocationsByUsername(login);
         return locations.stream()
                 .map(
                         location -> {
