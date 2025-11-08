@@ -53,7 +53,7 @@
                              src="https://openweathermap.org/img/wn/01n@4x.png"
                              alt="Weather icon">
                         <div class="card-body d-flex flex-column">
-                            <h1 class="card-text" th:text="${forecast.temp}">7°C</h1>
+                            <h1 class="card-text" th:text="${forecast.temp} + '°C'">7°C</h1>
                             <h3 class="card-title" th:text="${forecast.name} + ', ' + ${forecast.country}">Tbilisi,
                                 GE</h3>
                             <p class="card-text mb-1"
@@ -61,7 +61,7 @@
                                 like <span>2</span>°C.
                                 <span>Clear sky</span>
                             </p>
-                            <p class="card-text mb-1" th:text="'Humidity: ' + ${forecast.humidity}">Humidity: 70%</p>
+                            <p class="card-text mb-1" th:text="'Humidity: ' + ${forecast.humidity} + '%'">Humidity: 70%</p>
                         </div>
                     </div>
                 </div>

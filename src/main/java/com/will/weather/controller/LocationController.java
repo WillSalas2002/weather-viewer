@@ -53,7 +53,7 @@ public class LocationController {
     }
 
     @DeleteMapping
-    public String remove(HttpServletRequest request, RemoveLocationDto removeLocationDto) {
+    public String remove(RemoveLocationDto removeLocationDto) {
         locationService.remove(removeLocationDto);
         return "redirect:" + AppConstants.HOME_PATH;
     }

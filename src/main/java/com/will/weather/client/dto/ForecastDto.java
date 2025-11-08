@@ -16,7 +16,7 @@ public record ForecastDto(
     public record Main(
             @JsonProperty("temp") double temp,
             @JsonProperty("feels_like") double feelsLike,
-            @JsonProperty("humidity") double humidity) {}
+            @JsonProperty("humidity") int humidity) {}
 
     public record Weather(
             @JsonProperty("main") String main, @JsonProperty("description") String description) {}

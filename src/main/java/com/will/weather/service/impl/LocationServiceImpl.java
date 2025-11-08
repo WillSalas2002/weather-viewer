@@ -3,6 +3,7 @@ package com.will.weather.service.impl;
 import com.will.weather.client.WeatherClientImpl;
 import com.will.weather.client.dto.ForecastDto;
 import com.will.weather.client.dto.LocationResponse;
+import com.will.weather.constants.AppConstants;
 import com.will.weather.dto.AddLocationDto;
 import com.will.weather.dto.ForecastView;
 import com.will.weather.dto.RemoveLocationDto;
@@ -18,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 @Slf4j
@@ -82,13 +84,12 @@ public class LocationServiceImpl implements LocationService {
                 removeLocationDto.getLongitude());
     }
 
-    // TODO: need to convert from farangeit to celcius
     private ForecastView mapToForecastView(ForecastDto forecastDto, Location location) {
         return new ForecastView(
                 location.getLongitude(),
                 location.getLatitude(),
-                forecastDto.main().temp(),
-                forecastDto.main().feelsLike(),
+                convertToCelsius(forecastDto.main().temp()),
+                convertToCelsius(forecastDto.main().feelsLike()),
                 forecastDto.main().humidity(),
                 forecastDto.weathers().getFirst().main(),
                 forecastDto.weathers().getFirst().description(),
@@ -97,5 +98,10 @@ public class LocationServiceImpl implements LocationService {
                 forecastDto.sys().sunset(),
                 forecastDto.timezone(),
                 forecastDto.name());
+    }
+
+    private static double convertToCelsius(double kelvin) {
+        DecimalFormat df = new DecimalFormat("#.00");
+        return Double.parseDouble(df.format(kelvin - AppConstants.KELVIN_TO_CELSIUS_OFFSET));
     }
 }

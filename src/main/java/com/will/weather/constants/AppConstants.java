@@ -24,4 +24,8 @@ public class AppConstants {
     // Cookies and Sessions
     public static final String COOKIE_NAME = "sessionId";
     public static final String SESSION_NAME = "username";
+
+    // Temp conversion
+    public static final double KELVIN_TO_CELSIUS_OFFSET = 273.15;
+
 }

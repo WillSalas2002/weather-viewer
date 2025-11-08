@@ -7,7 +7,7 @@ public record ForecastView(
         BigDecimal latitude,
         double temp,
         double feelsLike,
-        double humidity,
+        int humidity,
         String main,
         String description,
         String country,
