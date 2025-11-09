@@ -28,8 +28,8 @@ public class LogoutController {
         cookie.setPath("/");
         cookie.setMaxAge(0);
         response.addCookie(cookie);
-        session.invalidate();
         log.info("User [{}] has logged out from the system.", session.getAttribute(AppConstants.SESSION_NAME));
+        session.invalidate();
         return "redirect:" + AppConstants.AUTH_PATH + AppConstants.LOGIN_PATH;
     }
 }

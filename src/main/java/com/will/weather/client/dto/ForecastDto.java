@@ -19,7 +19,9 @@ public record ForecastDto(
             @JsonProperty("humidity") int humidity) {}
 
     public record Weather(
-            @JsonProperty("main") String main, @JsonProperty("description") String description) {}
+            @JsonProperty("icon") String icon,
+            @JsonProperty("main") String main,
+            @JsonProperty("description") String description) {}
 
     public record Sys(
             @JsonProperty("country") String country,

@@ -50,7 +50,7 @@
                             <button type="submit" class="btn-close" aria-label="Delete"></button>
                         </form>
                         <img class="card-img-top img-fluid"
-                             src="https://openweathermap.org/img/wn/01n@4x.png"
+                             th:src="${forecast.iconUrl}"
                              alt="Weather icon">
                         <div class="card-body d-flex flex-column">
                             <h1 class="card-text" th:text="${forecast.temp} + '°C'">7°C</h1>

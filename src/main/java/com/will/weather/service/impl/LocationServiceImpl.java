@@ -16,6 +16,7 @@ import com.will.weather.service.LocationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +27,9 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class LocationServiceImpl implements LocationService {
+
+    @Value("${weather.url.icon}")
+    private String templatedWeatherIconUrl;
 
     private final WeatherClientImpl weatherClientImpl;
     private final UserRepository userRepository;
@@ -86,6 +90,7 @@ public class LocationServiceImpl implements LocationService {
 
     private ForecastView mapToForecastView(ForecastDto forecastDto, Location location) {
         return new ForecastView(
+                String.format(templatedWeatherIconUrl, forecastDto.weathers().getFirst().icon()),
                 location.getLongitude(),
                 location.getLatitude(),
                 convertToCelsius(forecastDto.main().temp()),

@@ -3,6 +3,7 @@ package com.will.weather.dto;
 import java.math.BigDecimal;
 
 public record ForecastView(
+        String iconUrl,
         BigDecimal longitude,
         BigDecimal latitude,
         double temp,
