@@ -37,7 +37,8 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public List<LocationResponse> getAll(String name) {
-        return weatherClientImpl.getLocations(name);
+        String validName = name.trim().replace(" ", "-");
+        return weatherClientImpl.getLocations(validName);
     }
 
     @Override
