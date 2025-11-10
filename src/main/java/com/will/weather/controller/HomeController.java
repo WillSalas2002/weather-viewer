@@ -2,8 +2,8 @@ package com.will.weather.controller;
 
 import com.will.weather.constants.AppConstants;
 import com.will.weather.dto.ForecastView;
-import com.will.weather.service.LocationService;
 import com.will.weather.service.LoginService;
+import com.will.weather.service.WeatherService;
 import com.will.weather.util.CookieHelper;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,7 +23,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class HomeController {
 
-    private final LocationService locationService;
+    private final WeatherService weatherService;
     private final LoginService loginService;
     private final CookieHelper cookieHelper;
 
@@ -31,7 +31,7 @@ public class HomeController {
     public String getHomePage(HttpServletRequest request, Model model) {
         if (isSessionValid(request)) {
             List<ForecastView> forecastView =
-                    locationService.findLocations(
+                    weatherService.findLocations(
                             (String) request.getSession().getAttribute(AppConstants.SESSION_NAME));
 
             model.addAttribute("forecastView", forecastView);
@@ -50,10 +50,3 @@ public class HomeController {
                 && !loginService.isSessionExpired(sessionIdOptional.get());
     }
 }
-
-/*
-    1) converting temperature from faranheit to celcius
-    4) deleting a location from user
-    2) loading corresponding weather icons
-    3) Cover code with tests
-*/

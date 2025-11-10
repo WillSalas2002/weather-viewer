@@ -5,6 +5,7 @@ import com.will.weather.constants.AppConstants;
 import com.will.weather.dto.AddLocationDto;
 import com.will.weather.dto.RemoveLocationDto;
 import com.will.weather.service.LocationService;
+import com.will.weather.service.WeatherService;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -28,13 +29,14 @@ import java.util.List;
 public class LocationController {
 
     private final LocationService locationService;
+    private final WeatherService weatherService;
 
     @GetMapping
     public String getLocations(
             @RequestParam(name = "name") String name, HttpServletRequest request, Model model) {
         String login = (String) request.getSession().getAttribute(AppConstants.SESSION_NAME);
         log.info("User [{}] is searching for location [{}]", login, name);
-        List<LocationResponse> locations = locationService.getAll(name);
+        List<LocationResponse> locations = weatherService.getAll(name);
 
         model.addAttribute("locations", locations);
         model.addAttribute("addLocationDto", new AddLocationDto());
@@ -54,6 +56,11 @@ public class LocationController {
 
     @DeleteMapping
     public String remove(RemoveLocationDto removeLocationDto) {
+        log.info(
+                "User [{}] is trying to remove location with lon [{}] and lat [{}]",
+                removeLocationDto.getLogin(),
+                removeLocationDto.getLongitude(),
+                removeLocationDto.getLatitude());
         locationService.remove(removeLocationDto);
         return "redirect:" + AppConstants.HOME_PATH;
     }
