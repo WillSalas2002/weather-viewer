@@ -7,6 +7,7 @@ import com.will.weather.repository.mapper.UserRowMapper;
 
 import lombok.AllArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -17,6 +18,7 @@ import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Repository
 @AllArgsConstructor
 public class UserRepositoryImpl implements UserRepository {
@@ -51,6 +53,7 @@ public class UserRepositoryImpl implements UserRepository {
                     keyHolder);
             return new Long(keyHolder.getKey().intValue());
         } catch (DuplicateKeyException e) {
+            log.info("Username [{}] is taken, ignoring save operation", user.getLogin());
             throw new UserAlreadyExistsException(
                     String.format("Username [%s] is already taken", user.getLogin()));
         }

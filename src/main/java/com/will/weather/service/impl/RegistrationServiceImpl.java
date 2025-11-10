@@ -9,6 +9,7 @@ import com.will.weather.service.RegistrationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,9 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class RegistrationServiceImpl implements RegistrationService {
+
+    @Value("${session.ttl}")
+    private Integer sessionTTL;
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
@@ -39,7 +43,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         log.info("Creating a new session for user [{}]", username);
         UUID sessionId = UUID.randomUUID();
         sessionRepository.save(
-                new Session(sessionId, savedUserId, LocalDateTime.now().plusHours(1)));
+                new Session(sessionId, savedUserId, LocalDateTime.now().plusSeconds(sessionTTL)));
         log.info("User [{}] successfully registered in the system", username);
         return sessionId;
     }
