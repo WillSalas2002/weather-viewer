@@ -52,14 +52,14 @@ public class WeatherServiceImpl implements WeatherService {
 
     private ForecastView mapToForecastView(ForecastDto forecastDto, Location location) {
         return new ForecastView(
-                String.format(templatedWeatherIconUrl, forecastDto.weathers().getFirst().icon()),
+                String.format(templatedWeatherIconUrl, forecastDto.weathers().get(0).icon()),
                 location.getLongitude(),
                 location.getLatitude(),
                 convertToCelsius(forecastDto.main().temp()),
                 convertToCelsius(forecastDto.main().feelsLike()),
                 forecastDto.main().humidity(),
-                forecastDto.weathers().getFirst().main(),
-                forecastDto.weathers().getFirst().description(),
+                forecastDto.weathers().get(0).main(),
+                forecastDto.weathers().get(0).description(),
                 forecastDto.sys().country(),
                 forecastDto.sys().sunrise(),
                 forecastDto.sys().sunset(),

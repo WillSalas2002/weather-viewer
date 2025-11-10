@@ -14,7 +14,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
-@WebFilter(urlPatterns = {"/weather", "/locations"})
+@WebFilter(urlPatterns = {AppConstants.HOME_PATH, AppConstants.LOCATION_PATH})
 public class AuthFilter implements Filter {
 
     @Override
@@ -25,7 +25,8 @@ public class AuthFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
-        String loginURL = request.getContextPath() + AppConstants.AUTH_PATH + AppConstants.LOGIN_PATH;
+        String loginURL =
+                request.getContextPath() + AppConstants.AUTH_PATH + AppConstants.LOGIN_PATH;
 
         HttpSession session = request.getSession(false);
 
