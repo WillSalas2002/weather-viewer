@@ -1,0 +1,10 @@
+spring.datasource.url=jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=password
+weather.api-key=dummy-key
+weather.url.coordinates=dummy-coordinate
+weather.quantity.limit=5
+weather.url.forecast=dummy-url
+weather.url.icon=dummy-url
+session.ttl=3
